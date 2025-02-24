@@ -2,332 +2,254 @@
 
 
 
-let sliderImages = Array.from(
-  document.querySelectorAll(".slider-container img")
-);
-
-let slidesCount = sliderImages.length;
-
-let currentSlide=1;
-
-
-let slideNumberElement = document.getElementById("slide-number");
-
-let nextButton=document.getElementById("next");
-let prevButton=document.getElementById("perv");
 
 
 
 
-let paginationElement =document.createElement("ul");
 
-paginationElement.setAttribute("id", "pagination-ul");
 
- 
 
-for(let i= 0;i<slidesCount;i++)
+
+let images = document.querySelectorAll(".image_container img");
+
+let ul = document.createElement("ul");
+
+let indicators = document.querySelector(".indicators");
+
+
+let i=0;
+images.forEach( image => { 
+
+  image.classList.add(`image${++i}`);
+
+  let li = document.createElement("li");
+
+  li.id=`image${i}`;
+
+  li.innerHTML=`${i}`;
+
+  ul.appendChild(li);
+
+
+  
+});
+
+indicators.appendChild(ul);
+
+let lis = document.querySelectorAll(".indicators ul li");
+
+lis[0].classList.add("active")
+
+
+
+function showImageByNum()
 {
-  let paginationItem =document.createElement("li")
-;
 
-paginationItem.setAttribute("data-index",i);
+ let activeli=document.querySelector(".indicators ul li.active");
 
-paginationItem.appendChild(document.createTextNode(i));
+    images.forEach(image => {
 
-paginationElement.appendChild(paginationItem);
+      image.style.opacity=0;
+      
+      if(  image.classList.contains(activeli.id))
+        {
+          image.style.opacity=1;
+          
+      };
 
+    })
+
+  
 
 }
 
 
 
 
-document.getElementById("indicators").appendChild(paginationElement);
+
+// let li = document.querySelector(".indicators ul li");
+
+// li.addEventListener("click",function(e) {
 
 
 
-let paginationCreatedUl = document.getElementById("pagination-ul");
+// })
 
 
 
 
-let paginationsBullets = Array.from(
-  document.querySelectorAll("#pagination-ul li")
-);
+lis.forEach((li) => {
+
+  li.addEventListener("click",function(e){
+    
+    lis.forEach(li => li.classList.remove("active"))
+    // li.classList.remove("active");
+    
+    e.currentTarget.classList.add("active");
+    
+    showImageByNum();
+    UpdateControlles();
+  })
+  
+})
 
 
-for(let i=0;i<paginationsBullets.length;i++)
+
+
+// lis.forEach((li)=> console.log(li.dataset.num));
+
+
+
+
+
+//Pervious and next  
+
+
+
+function PerviousImage()
 {
+  
+  
+  lis.forEach((li) => {
+    
+    if(!(li.id ==="image1"))
+      { 
+        
 
-  paginationsBullets[i].addEventListener("click", function () {
+      // lis.forEach(li => li.classList.remove("active"))
+        if(li.classList.contains("active")){
 
-    currentSlide =parseInt(this.getAttribute("data-index"));
+          li.classList.remove("active");
 
-    theChecker();
+          let liNum=parseInt(li.innerHTML);
+          --liNum;
+          // console.log(liNum)
+        let liperv = document.getElementById(`image${liNum}`);
+liperv.classList.add("active");
+
+
+            showImageByNum()
+        }
+
+     } 
+
 
   })
 
-}
-
-
-function nextSlide () {
-
-  if(nextButton.classList.contains("disabled")) {
-
-    return false;
-  } else {
-
-    currentSlide++;
-
-    theChecker();
-  }
-}
-
-function prevSlide() {
-
-  if(prevButton.classList.contains("disabled")) {
-
-    return false;
-  } else {
-    currentSlide--;
-    theChecker();
-  }
-
 
 }
 
 
+let Pervious = document.querySelector(".slider_controls .pervious");
+let Next =document.querySelector(".slider_controls .next")
+
+let SlideNum = document.querySelector(".slideNum");
 
 
-function theChecker() {
-
-  slideNumberElement.textContent=`Slide # ${currentSlide} of ${slidesCount}`;
+Pervious.addEventListener("click",function () {
 
 
-  removeAllActive();
+  if(!(document.querySelector(".active").innerHTML==="1"))
+  {
 
-  sliderImages[currentSlide -1].classList.add("active");
-
-  paginationCreatedUl.children[currentSlide -1].classList.add("active");
-
-
-  if(currentSlide ==1 ) {
-
-    prevButton.classList.add("disabled");
-  }else {
-    prevButton.classList.remove("disabled")
-
+      PerviousImage();
+      UpdateControlles();
 
   }
 
-
-  if(currentSlide === slidesCount) {
-
-    nextButton.classList.add("disabled");
-  }else {
-
-    nextButton.classList.remove("disabled");
-  }
-
-
-
-
-
-}
-
-
-function removeAllActive() {
-
-sliderImages.forEach((Img) => {
-  Img.classList.remove("active");
-})
-
-paginationsBullets.forEach(function (bullet) {
-
-
-  bullet.classList.remove("active");
 })
 
 
 
+// next button
+
+
+
+function NextImage() {
+  // lis.forEach((li) => {
+
+    // let newlis= Array.from(lis);
+    for (let i =0;i<lis.length;i++) {
+      if (lis[i].classList.contains("active")) {
+        // lis.forEach(li => li.classList.remove("active"))
+        if (lis[i].classList.contains("active")) {
+          lis[i].classList.remove("active");
+
+          let liNum = parseInt(lis[i].innerHTML);
+          if (liNum < 5) {
+            liNum++;
+          }
+          // console.log(liNum);
+          let liNext = document.getElementById(`image${liNum}`);
+          liNext.classList.add("active");
+
+          showImageByNum();
+          break;
+        }
+      }
+    };
+}
+
+
+Next.addEventListener("click",function () {
+
+
+  if(!(document.querySelector(".active").innerHTML==="5"))
+  {
+
+      NextImage();
+      UpdateControlles();
+
+  }
+
+})
+
+
+
+function disapledpervNext() {
+  if(document.querySelector("li.active").id==="image1") {
+    Pervious.classList.add("disabledButton");
+    Pervious.style.cursor = "default";
+  } else {
+    if(Pervious.classList.contains("disabledButton")) {
+      Pervious.classList.remove("disabledButton");
+      Pervious.style.cursor = "pointer";
+    }
+  }
+    
+  if (document.querySelector("li.active").id === "image5") {
+    Next.classList.add("disabledButton");
+    Next.style.cursor = "default";
+  } else {
+    if (Next.classList.contains("disabledButton")) {
+      Next.classList.remove("disabledButton");
+      Next.style.cursor = "pointer";
+    }
+  }
 }
 
 
 
 
+function changeSlideNum(){
 
+SlideNum.textContent=`Slide #${document.querySelector("li.active").textContent}`;
 
+}
 
 
+function UpdateControlles()
+{
+  
+  
+  changeSlideNum();
+  
+  disapledpervNext(); 
 
+}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Get Slider Items | Array.form [ES6 Feature]
-// var sliderImages = Array.from(
-//   document.querySelectorAll(".slider-container img")
-// );
-
-// // Get Number Of Slides
-// var slidesCount = sliderImages.length;
-
-// // Set Current Slide
-// var currentSlide = 1;
-
-// // Slide Number Element
-// var slideNumberElement = document.getElementById("slide-number");
-
-// // Previous and Next Buttons
-// var nextButton = document.getElementById("next");
-// var prevButton = document.getElementById("prev");
-
-// // Handle Click on Previous and Next Buttons
-// nextButton.onclick = nextSlide;
-// prevButton.onclick = prevSlide;
-
-// // Create The Main UL Element
-// var paginationElement = document.createElement("ul");
-
-// // Set ID On Created Ul Element
-// paginationElement.setAttribute("id", "pagination-ul");
-
-// // Create List Items Based On Slides Count
-// for (var i = 1; i <= slidesCount; i++) {
-//   // Create The LI
-//   var paginationItem = document.createElement("li");
-
-//   // Set Custom Attribute
-//   paginationItem.setAttribute("data-index", i);
-
-//   // Set Item Content
-//   paginationItem.appendChild(document.createTextNode(i));
-
-//   // Append Items to The Main Ul List
-//   paginationElement.appendChild(paginationItem);
-// }
-
-// // Add The Created UL Element to The Page
-// document.getElementById("indicators").appendChild(paginationElement);
-
-// // Get The New Created UL
-// var paginationCreatedUl = document.getElementById("pagination-ul");
-
-// // Get Pagination Items | Array.form [ES6 Feature]
-// var paginationsBullets = Array.from(
-//   document.querySelectorAll("#pagination-ul li")
-// );
-
-// // Loop Through All Bullets Items
-// for (var i = 0; i < paginationsBullets.length; i++) {
-//   paginationsBullets[i].onclick = function () {
-//     currentSlide = parseInt(this.getAttribute("data-index"));
-
-//     theChecker();
-//   };
-// }
-
-// // Trigger The Checker Function
-// theChecker();
-
-// // Next Slide Function
-// function nextSlide() {
-//   if (nextButton.classList.contains("disabled")) {
-//     // Do Nothing
-//     return false;
-//   } else {
-//     currentSlide++;
-
-//     theChecker();
-//   }
-// }
-
-// // Previous Slide Function
-// function prevSlide() {
-//   if (prevButton.classList.contains("disabled")) {
-//     // Do Nothing
-//     return false;
-//   } else {
-//     currentSlide--;
-
-//     theChecker();
-//   }
-// }
-
-// // Create The Checker Function
-// function theChecker() {
-//   // Set The Slide Number
-//   slideNumberElement.textContent =
-//     "Slide #" + currentSlide + " of " + slidesCount;
-
-//   // Remove All Active Classes
-//   removeAllActive();
-
-//   // Set Active Class On Current Slide
-//   sliderImages[currentSlide - 1].classList.add("active");
-
-//   // Set Active Class on Current Pagination Item
-//   paginationCreatedUl.children[currentSlide - 1].classList.add("active");
-
-//   // Check if Current Slide is The First
-//   if (currentSlide == 1) {
-//     // Add Disabled Class on Previous Button
-//     prevButton.classList.add("disabled");
-//   } else {
-//     // Remove Disabled Class From Previous Button
-//     prevButton.classList.remove("disabled");
-//   }
-
-//   // Check if Current Slide is The Last
-//   if (currentSlide == slidesCount) {
-//     // Add Disabled Class on Next Button
-//     nextButton.classList.add("disabled");
-//   } else {
-//     // Remove Disabled Class From Next Button
-//     nextButton.classList.remove("disabled");
-//   }
-// }
-
-// // Remove All Active Classes From Images and Pagination Bullets
-// function removeAllActive() {
-//   // Loop Through Images
-//   sliderImages.forEach(function (img) {
-//     img.classList.remove("active");
-//   });
-
-//   // Loop Through Pagination Bullets
-//   paginationsBullets.forEach(function (bullet) {
-//     bullet.classList.remove("active");
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+window.onload = UpdateControlles();
 
 
