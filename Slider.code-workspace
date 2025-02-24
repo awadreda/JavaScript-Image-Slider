@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../Slider"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Elzero_Slider"
+	}
+}
